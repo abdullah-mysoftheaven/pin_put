@@ -7,15 +7,26 @@ import 'package:pin_put/scroll_issue/scroll_issue_controller.dart';
 import 'package:pinput/pinput.dart';
 
 import 'collaps_page_controller.dart';
+import 'dbid_data.dart';
 
 
 
 
-class CollapsePage extends StatelessWidget {
+class CollapsePage extends StatefulWidget {
 
+  @override
+  State<CollapsePage> createState() => _CollapsePageState();
+}
+
+class _CollapsePageState extends State<CollapsePage> {
   final collapsePageController = Get.put(CollapsePageController());
+
   var width;
+
   var height;
+
+
+
 
 
   @override
@@ -24,16 +35,58 @@ class CollapsePage extends StatelessWidget {
     return Scaffold(
        resizeToAvoidBottomInset: true,
         appBar: AppBar(
-            title: Text("Collapse Data"),
-            backgroundColor: Colors.redAccent
+            title: const Text("Collapse Data"),
+            backgroundColor: Colors.redAccent,
+          actions: [
+            ElevatedButton(onPressed: (){
+             if( collapsePageController.englishOrBangla.value == EnglishOrBangla.bangla){
+               collapsePageController.setEnglishOrBangla(EnglishOrBangla.english);
+
+             }else{
+               collapsePageController.setEnglishOrBangla(EnglishOrBangla.bangla);
+
+             }
+            }, child: const Text("Translate"))
+          ],
         ),
-      body:Obx(() =>  ListView.builder(
-          padding: EdgeInsets.only(bottom: 20),
-          itemCount: collapsePageController.dataList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Obx(() => listItemDesign(itemData: collapsePageController.dataList[index],
-              index: index, selectedItemIndex:collapsePageController.expandedIndex.value,));
-          }))
+      body:Obx(() =>  Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ElevatedButton(onPressed: (){
+
+                  collapsePageController.setIndex(0);
+
+              }, child: const Text("Privacy Policy")),
+              ElevatedButton(onPressed: (){
+                collapsePageController.setIndex(1);
+              }, child: const Text("Terms of Use")),
+
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ElevatedButton(onPressed: (){
+                collapsePageController.setIndex(2);
+              }, child: const Text("FAQ")),
+              ElevatedButton(onPressed: (){
+                collapsePageController.setIndex(3);
+              }, child: const Text("Security")),
+            ],
+          ),
+          Expanded(
+            child: ListView.builder(
+                padding: const EdgeInsets.only(bottom: 20),
+                itemCount: collapsePageController.getBanglaOrEnglish( collapsePageController.englishOrBangla.value).length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Obx(() => listItemDesign(itemData: collapsePageController.getBanglaOrEnglish(collapsePageController.englishOrBangla.value)[index],
+                    index: index, selectedItemIndex: collapsePageController.expandedIndex.value,));
+                }),
+          ),
+        ],
+      ))
 
     );
 
@@ -53,7 +106,7 @@ class CollapsePage extends StatelessWidget {
       margin:const EdgeInsets.only(left:10, top: 10, right: 10, bottom: 0   ),
       child: InkWell(
         onTap: (){
-          if(selectedItemIndex==index.toString()){
+          if(selectedItemIndex == index.toString()){
             collapsePageController.expandedIndex("-1");
           }else{
             collapsePageController.expandedIndex(index.toString());
@@ -91,7 +144,7 @@ class CollapsePage extends StatelessWidget {
 
                       SizedBox(width: 10,),
 
-                      if(selectedItemIndex==index.toString())...{
+                      if(selectedItemIndex == index.toString())...{
                         Container(
                         //  margin: EdgeInsets.only(bottom: 10),
                          child: Icon(
@@ -116,7 +169,7 @@ class CollapsePage extends StatelessWidget {
                       },
 
 
-                      SizedBox(width: 10,)
+                      const SizedBox(width: 10,)
                     ],
                   ),
 
@@ -138,7 +191,7 @@ class CollapsePage extends StatelessWidget {
                         color: Colors.grey.withOpacity(0.25), // Shadow color
                         spreadRadius: 1, // Spread radius
                         blurRadius: 1, // Blur radius
-                        offset: Offset(0, 1), // Offset
+                        offset: const Offset(0, 1), // Offset
                       ),
                     ],
                     borderRadius: const BorderRadius.only(
@@ -146,7 +199,7 @@ class CollapsePage extends StatelessWidget {
                       bottomRight: Radius.circular(6.0), // Adjust the radius for the top-left corner
                     ),
                   ),
-                  padding: EdgeInsets.only(left: 15,right: 15,top: 15,bottom: 20),
+                  padding: const EdgeInsets.only(left: 15,right: 15,top: 15,bottom: 20),
 
                   child: Text(
                     itemData.description.toString(),
@@ -169,12 +222,14 @@ class CollapsePage extends StatelessWidget {
       ),
     );
   }
-
-
 }
 
 
 
+
+
+
+enum EnglishOrBangla{english, bangla}
 
 
 
